@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinWise Quiz</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background: black;
+            color: #00ffcc;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .quiz-container {
+            max-width: 600px;
+            margin: 100px auto;
+            background: #222;
+            padding: 20px;
+            border: 4px solid #00ffcc;
+            box-shadow: 8px 8px 0 #00ffcc;
+        }
+
+        h1 {
+            font-size: 18px;
+            text-shadow: 2px 2px #00ffcc;
+        }
+
+        .question {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .option {
+            display: block;
+            background: black;
+            color: #00ffcc;
+            border: 2px solid #00ffcc;
+            padding: 10px;
+            margin: 10px auto;
+            cursor: pointer;
+            width: 80%;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .option:hover {
+            background: #00ffcc;
+            color: black;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>💰 FinWise Quiz 💰</h1>
+        <p class="question" id="question-text"></p>
+        <div id="options-container"></div>
+        <p id="result" class="hidden">✅ Correct! Proceeding...</p>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "What is the full form of SIP?",
+                options: ["Systematic Investment Plan", "Savings in Portfolio", "Secure Investment Plan", "Stock Interest Portfolio"],
+                correct: 0
+            },
+            {
+                question: "What does NAV stand for in mutual funds?",
+                options: ["Net Asset Value", "National Asset Volume", "Non-Accountable Value", "Newly Added Venture"],
+                correct: 0
+            },
+            {
+                question: "Which of these is a tax-saving investment?",
+                options: ["Fixed Deposit", "Public Provident Fund (PPF)", "Recurring Deposit", "Savings Account"],
+                correct: 1
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+
+        function loadQuestion() {
+            const questionText = document.getElementById("question-text");
+            const optionsContainer = document.getElementById("options-container");
+            optionsContainer.innerHTML = "";
+            document.getElementById("result").classList.add("hidden");
+
+            if (currentQuestionIndex >= quizData.length) {
+                questionText.innerHTML = "🎉 Quiz Completed! Well done!";
+                return;
+            }
+
+            const currentQuestion = quizData[currentQuestionIndex];
+            questionText.innerHTML = currentQuestion.question;
+
+            currentQuestion.options.forEach((option, index) => {
+                const btn = document.createElement("button");
+                btn.classList.add("option");
+                btn.innerText = option;
+                btn.onclick = () => checkAnswer(index);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedIndex) {
+            if (selectedIndex === quizData[currentQuestionIndex].correct) {
+                document.getElementById("result").classList.remove("hidden");
+                setTimeout(() => {
+                    currentQuestionIndex++;
+                    loadQuestion();
+                }, 1000);
+            } else {
+                alert("❌ Wrong answer! Try again.");
+            }
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>
