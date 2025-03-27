@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Returns Estimator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white shadow-lg rounded-lg p-6 max-w-lg w-full">
+        <h1 class="text-lg font-semibold text-center">Returns Estimator</h1>
+        <p class="text-gray-500 text-center text-sm">Estimation based on past performance</p>
+
+        <!-- Investment Amount Input -->
+        <div class="mt-4">
+            <p class="text-gray-500 text-sm">Enter Amount (₹)</p>
+            <input type="number" id="investment-amount" class="w-3/4 p-2 border rounded block mx-auto text-center" value="5000">
+        </div>
+
+        <!-- SIP vs Lumpsum Toggle -->
+        <div class="mt-4 flex justify-center space-x-4">
+            <button id="sip-btn" class="bg-blue-500 text-white px-4 py-2 rounded text-sm">SIP</button>
+            <button id="lumpsum-btn" class="bg-gray-300 px-4 py-2 rounded text-sm">Lumpsum</button>
+        </div>
+
+        <!-- Duration Slider -->
+        <div class="mt-4">
+            <p class="text-gray-500 text-sm">Select Duration (Years)</p>
+            <input type="range" id="duration" min="1" max="30" value="22" class="w-full">
+            <p class="text-right text-xs"><span id="duration-display">22</span> Years</p>
+        </div>
+
+        <!-- Expected Rate of Return -->
+        <div class="mt-4">
+            <p class="text-gray-500 text-sm">Expected Rate of Return (%)</p>
+            <input type="range" id="rate" min="8" max="30" value="12" class="w-full">
+            <p class="text-right text-xs"><span id="rate-display">12</span>%</p>
+        </div>
+
+        <!-- Estimated Returns -->
+        <div class="mt-4 text-center">
+            <p class="text-sm">Total Value after <span id="years-text">22</span> Years:</p>
+            <p class="text-2xl font-semibold">₹ <span id="total-value">64,79,480</span></p>
+        </div>
+
+        <!-- Dynamic Pie Chart -->
+        <div class="mt-4">
+            <canvas id="returnsChart"></canvas>
+        </div>
+
+        <!-- Year-wise Growth Table -->
+        <div class="mt-4">
+            <h2 class="text-lg font-semibold text-center">Yearly Growth Breakdown</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left border border-gray-300">
+                    <thead>
+                        <tr class="bg-gray-200">
+                            <th class="p-2">Year</th>
+                            <th class="p-2 text-right">Invested (₹)</th>
+                            <th class="p-2 text-right">Returns (₹)</th>
+                            <th class="p-2 text-right">Total (₹)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="growth-table"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const investmentInput = document.getElementById("investment-amount");
+            const durationInput = document.getElementById("duration");
+            const rateInput = document.getElementById("rate");
+            const totalValueDisplay = document.getElementById("total-value");
+            const durationDisplay = document.getElementById("duration-display");
+            const rateDisplay = document.getElementById("rate-display");
+            const yearsText = document.getElementById("years-text");
+            const sipBtn = document.getElementById("sip-btn");
+            const lumpsumBtn = document.getElementById("lumpsum-btn");
+            const growthTable = document.getElementById("growth-table");
+
+            let isSIP = true;
+
+            const ctx = document.getElementById("returnsChart").getContext("2d");
+            let returnsChart = new Chart(ctx, {
+                type: "pie",
+                data: {
+                    labels: ["Invested Amount", "Est. Returns"],
+                    datasets: [{ data: [0, 0], backgroundColor: ["#ff8c00", "#007bff"] }],
+                },
+            });
+
+            function calculateReturns() {
+                const principal = parseFloat(investmentInput.value) || 0;
+                const years = parseInt(durationInput.value);
+                const rate = parseFloat(rateInput.value) / 100;
+                let futureValue, totalInvested, yearlyData = [];
+
+                if (isSIP) {
+                    let invested = 0, total = 0;
+                    for (let i = 1; i <= years; i++) {
+                        invested += principal * 12;
+                        total = total * (1 + rate) + principal * 12 * (1 + rate);
+                        let returns = total - invested;
+                        yearlyData.push({ year: i, invested, returns, total });
+                    }
+                } else {
+                    totalInvested = principal;
+                    for (let i = 1; i <= years; i++) {
+                        futureValue = principal * Math.pow(1 + rate, i);
+                        let returns = futureValue - totalInvested;
+                        yearlyData.push({ year: i, invested: totalInvested, returns, total: futureValue });
+                    }
+                }
+
+                totalValueDisplay.textContent = yearlyData[years - 1].total.toLocaleString("en-IN");
+                yearsText.textContent = years;
+                durationDisplay.textContent = years;
+                rateDisplay.textContent = (rate * 100).toFixed(1);
+
+                updateTable(yearlyData);
+                updateChart(yearlyData[years - 1].invested, yearlyData[years - 1].returns);
+            }
+
+            function updateTable(yearlyData) {
+                growthTable.innerHTML = yearlyData.map(data =>
+                    `<tr>
+                        <td class="p-2">${data.year}</td>
+                        <td class="p-2 text-right">${data.invested.toLocaleString("en-IN")}</td>
+                        <td class="p-2 text-right text-blue-500">${data.returns.toLocaleString("en-IN")}</td>
+                        <td class="p-2 text-right font-semibold">${data.total.toLocaleString("en-IN")}</td>
+                    </tr>`
+                ).join('');
+            }
+
+            function updateChart(invested, returns) {
+                returnsChart.data.datasets[0].data = [invested, returns];
+                returnsChart.update();
+            }
+
+            [investmentInput, durationInput, rateInput].forEach((input) => input.addEventListener("input", calculateReturns));
+
+            sipBtn.addEventListener("click", function () {
+                isSIP = true;
+                sipBtn.classList.add("bg-blue-500", "text-white");
+                lumpsumBtn.classList.remove("bg-blue-500", "text-white");
+                lumpsumBtn.classList.add("bg-gray-300");
+                calculateReturns();
+            });
+
+            lumpsumBtn.addEventListener("click", function () {
+                isSIP = false;
+                lumpsumBtn.classList.add("bg-blue-500", "text-white");
+                sipBtn.classList.remove("bg-blue-500", "text-white");
+                sipBtn.classList.add("bg-gray-300");
+                calculateReturns();
+            });
+
+            calculateReturns();
+        });
+    </script>
+</body>
+</html>

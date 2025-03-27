@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Score Estimator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .credit-score-container {
+            max-width: 400px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .credit-score-container h2 {
+            margin-bottom: 15px;
+        }
+        .credit-score-container input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100%;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        h3 {
+            margin-top: 15px;
+            color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="credit-score-container">
+        <h2>Credit Score Estimator</h2>
+
+        <label>Payment History (% on-time payments):</label>
+        <input type="number" id="paymentHistory" min="0" max="100" value="100"/>
+
+        <label>Credit Utilization (% of limit used):</label>
+        <input type="number" id="creditUtilization" min="0" max="100" value="20"/>
+
+        <label>Length of Credit History (Years):</label>
+        <input type="number" id="creditHistory" min="0" value="5"/>
+
+        <label>Credit Mix (Number of credit types):</label>
+        <input type="number" id="creditMix" min="0" value="3"/>
+
+        <label>Recent Hard Inquiries (Last 6 months):</label>
+        <input type="number" id="hardInquiries" min="0" value="1"/>
+
+        <button onclick="calculateCreditScore()">Calculate Score</button>
+
+        <h3>Your Estimated Credit Score: <span id="creditScore">---</span></h3>
+    </div>
+
+    <script>
+        function calculateCreditScore() {
+            let paymentHistory = parseFloat(document.getElementById('paymentHistory').value);
+            let creditUtilization = parseFloat(document.getElementById('creditUtilization').value);
+            let creditHistory = parseFloat(document.getElementById('creditHistory').value);
+            let creditMix = parseFloat(document.getElementById('creditMix').value);
+            let hardInquiries = parseFloat(document.getElementById('hardInquiries').value);
+
+            // Weighted calculations based on credit scoring models
+            let score = 300 + 
+                        (paymentHistory * 0.35 * 5) + 
+                        ((100 - creditUtilization) * 0.30 * 5) + 
+                        (creditHistory * 0.15 * 10) + 
+                        (creditMix * 0.10 * 10) - 
+                        (hardInquiries * 10);
+
+            // Limit score between 300 and 900
+            score = Math.max(300, Math.min(score, 900));
+
+            document.getElementById('creditScore').innerText = Math.round(score);
+        }
+    </script>
+
+</body>
+</html>
