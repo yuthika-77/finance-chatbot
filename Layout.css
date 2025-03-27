@@ -1,0 +1,146 @@
+@import url('https://fonts.googleapis.com/css2?family=Bungee&display=swap');
+
+.layout {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #bf9de8;
+}
+
+.top-nav {
+    background: #222;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    border-bottom: 2px solid #00ffcc;
+}
+
+.nav-link {
+    color: #00ffcc;
+    text-decoration: none;
+    padding: 8px 16px;
+    border: 2px solid #00ffcc;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    transition: all 0.2s ease-in-out;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.nav-link:hover {
+    background: #00ffcc;
+    color: black;
+    transform: translateY(-2px);
+}
+
+.nav-link.active {
+    background: #00ffcc;
+    color: black;
+}
+
+.nav-icon {
+    font-size: 12px;
+}
+
+.content {
+    margin-top: 60px;
+    padding: 20px;
+}
+
+.page-content {
+    display: flex;
+    margin-top: 50px;
+    min-height: calc(100vh - 50px);
+}
+
+.article-sidebar {
+    width: 200px;
+    background-color: #f0f0f0;
+    padding: 1rem;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 50px;
+    bottom: 0;
+    overflow-y: auto;
+    z-index: 900;
+}
+
+.article-sidebar h3 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    font-family: 'Bungee', cursive;
+    font-size: 1.2rem;
+}
+
+.article-sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.article-sidebar li {
+    margin-bottom: 0.8rem;
+}
+
+.article-sidebar a {
+    color: #666;
+    text-decoration: none;
+    transition: color 0.3s;
+    font-size: 0.9rem;
+    display: block;
+    padding: 0.3rem 0;
+}
+
+.article-sidebar a:hover {
+    color: #2c3e50;
+}
+
+.main-content {
+    flex: 1;
+    margin-left: 200px;
+    padding: 2rem;
+    background-color: #fff;
+    min-height: calc(100vh - 50px);
+}
+
+@media (max-width: 768px) {
+    .top-nav {
+        padding: 5px;
+        gap: 10px;
+    }
+
+    .nav-link {
+        padding: 5px 10px;
+        font-size: 8px;
+    }
+
+    .nav-icon {
+        font-size: 10px;
+    }
+
+    .page-content {
+        margin-top: 45px;
+        flex-direction: column;
+    }
+
+    .article-sidebar {
+        width: 100%;
+        position: relative;
+        top: 0;
+        box-shadow: none;
+        height: auto;
+        padding: 0.8rem;
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: 1rem;
+    }
+} 

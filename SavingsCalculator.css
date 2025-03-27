@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+.calculator-container {
+    max-width: 400px;
+    margin: 100px auto;
+    background: #222;
+    padding: 20px;
+    border: 4px solid #00ffcc;
+    box-shadow: 8px 8px 0 #00ffcc;
+    font-family: 'Press Start 2P', cursive;
+    color: #00ffcc;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+.calculator-container h2 {
+    font-size: 16px;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px #00ffcc;
+}
+
+.input-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    font-size: 10px;
+    margin-bottom: 5px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 8px;
+    background: black;
+    border: 2px solid #00ffcc;
+    color: #00ffcc;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+}
+
+.input-group input:focus {
+    outline: none;
+    box-shadow: 0 0 5px #00ffcc;
+}
+
+button {
+    background: black;
+    color: #00ffcc;
+    padding: 10px;
+    border: 2px solid #00ffcc;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    transition: all 0.2s ease-in-out;
+}
+
+button:hover {
+    background: #00ffcc;
+    color: black;
+    transform: scale(1.05);
+}
+
+h3 {
+    font-size: 12px;
+    margin-top: 20px;
+}
+
+.suggestions {
+    margin-top: 15px;
+    text-align: left;
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+.suggestions ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.suggestions li {
+    margin: 5px 0;
+}
+
+@media (max-width: 768px) {
+    .calculator-container {
+        margin: 50px auto;
+        padding: 15px;
+        width: 90%;
+    }
+
+    .calculator-container h2 {
+        font-size: 14px;
+    }
+
+    .input-group label {
+        font-size: 8px;
+    }
+
+    .input-group input {
+        font-size: 8px;
+        padding: 6px;
+    }
+
+    button {
+        font-size: 8px;
+        padding: 8px;
+    }
+
+    h3 {
+        font-size: 10px;
+    }
+
+    .suggestions {
+        font-size: 8px;
+    }
+} 

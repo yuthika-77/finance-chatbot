@@ -1,0 +1,53 @@
+.navigation {
+    background-color: #DFC5FE;
+    color: #F5F2D0;
+    padding: 0.5rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+
+.navigation h2 {
+    display: none; /* Hide the "Quick Topics" heading */
+}
+
+.nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.nav-item {
+    background-color: #DFC5FE;
+    color: #F5F2D0;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.nav-item:hover {
+    background-color: #c4a2ee;
+}
+
+@media (max-width: 768px) {
+    .nav-list {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE and Edge */
+    }
+
+    .nav-list::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Opera */
+    }
+} 

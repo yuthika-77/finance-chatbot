@@ -1,0 +1,37 @@
+.list{
+    display:flex;
+    justify-content:space-between;
+    margin:10px;
+    padding:10px;
+
+}
+
+.list-items{
+    color:#DFC5FE;
+    size:25px;
+    font-family:'Bungee',sans-serif;
+    list-style-type: none;
+}
+
+body{
+    background-color: #DFC5FE;
+    color:#F5F2D0;
+    margin:0px;
+    padding:0px;
+
+
+}
+
+#title{
+    font-size:40px;
+    display:flex;
+    align-items:center;
+    font-family:'Bungee',sans-serif;
+    color :black;
+
+}
+
+.Nav{
+    background-color: #DFC5FE;
+    color:#F5F2D0;
+}
