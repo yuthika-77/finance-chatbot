@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance News - Retro Style</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+        /* General Styles */
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background: black;
+            color: limegreen;
+            text-align: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 22px;
+            text-shadow: 2px 2px red;
+            animation: flicker 1s infinite alternate;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 1; }
+            50% { opacity: 0.8; }
+            100% { opacity: 1; }
+        }
+
+        /* News Container */
+        .news-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .news-card {
+            background: darkgreen;
+            border: 3px solid lime;
+            padding: 15px;
+            margin: 10px;
+            width: 80%;
+            text-align: left;
+            color: white;
+            font-size: 14px;
+            box-shadow: 4px 4px yellow;
+            display: none; /* Initially hidden */
+        }
+
+        .news-card.active {
+            display: block; /* Show active news only */
+        }
+
+        .news-card img {
+            width: 100%;
+            height: auto;
+            border-bottom: 3px solid lime;
+        }
+
+        .news-card a {
+            color: yellow;
+            text-decoration: none;
+        }
+
+        /* Navigation Buttons */
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .arcade-button {
+            background: red;
+            color: yellow;
+            border: none;
+            padding: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 4px 4px black;
+            transition: transform 0.1s ease-in-out;
+        }
+
+        .arcade-button:hover {
+            background: yellow;
+            color: black;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+
+    <h1>💰 FINANCE INSHOTS 💰</h1>
+
+    <div class="news-container">
+        <div class="news-card active">
+            <img src="https://source.unsplash.com/400x200/?money,finance" alt="News Image">
+            <h2>🔥 Stock Market Surges by 5%</h2>
+            <p>The markets saw a huge rally today with major stocks hitting all-time highs.</p>
+            <a href="#">Read More</a>
+        </div>
+        <div class="news-card">
+            <img src="https://source.unsplash.com/400x200/?crypto,bitcoin" alt="News Image">
+            <h2>🚀 Bitcoin Hits $70K!</h2>
+            <p>Bitcoin breaks new records, making investors millions overnight.</p>
+            <a href="#">Read More</a>
+        </div>
+        <div class="news-card">
+            <img src="https://source.unsplash.com/400x200/?tax,government" alt="News Image">
+            <h2>💰 New Tax Policies Announced</h2>
+            <p>The government introduces new tax benefits for small businesses.</p>
+            <a href="#">Read More</a>
+        </div>
+    </div>
+
+    <div class="nav-buttons">
+        <button class="arcade-button" onclick="prevNews()">⬅ PREV</button>
+        <button class="arcade-button" onclick="nextNews()">NEXT ➡</button>
+    </div>
+
+    <script>
+        let currentIndex = 0;
+        const newsItems = document.querySelectorAll(".news-card");
+
+        function showNews(index) {
+            newsItems.forEach((item, i) => {
+                item.classList.toggle("active", i === index);
+            });
+        }
+
+        function nextNews() {
+            currentIndex = (currentIndex + 1) % newsItems.length;
+            showNews(currentIndex);
+        }
+
+        function prevNews() {
+            currentIndex = (currentIndex - 1 + newsItems.length) % newsItems.length;
+            showNews(currentIndex);
+        }
+    </script>
+
+</body>
+</html>
