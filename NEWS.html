@@ -93,53 +93,33 @@
 </head>
 <body>
 
-    <h1>💰 FINANCE INSHOTS 💰</h1>
-
-    <div class="news-container">
-        <div class="news-card active">
-            <img src="https://source.unsplash.com/400x200/?money,finance" alt="News Image">
-            <h2>🔥 Stock Market Surges by 5%</h2>
-            <p>The markets saw a huge rally today with major stocks hitting all-time highs.</p>
-            <a href="#">Read More</a>
-        </div>
-        <div class="news-card">
-            <img src="https://source.unsplash.com/400x200/?crypto,bitcoin" alt="News Image">
-            <h2>🚀 Bitcoin Hits $70K!</h2>
-            <p>Bitcoin breaks new records, making investors millions overnight.</p>
-            <a href="#">Read More</a>
-        </div>
-        <div class="news-card">
-            <img src="https://source.unsplash.com/400x200/?tax,government" alt="News Image">
-            <h2>💰 New Tax Policies Announced</h2>
-            <p>The government introduces new tax benefits for small businesses.</p>
-            <a href="#">Read More</a>
-        </div>
+    <div style="position:fixed; top:10px; left:10px;">
+        <a href="homepage.html" style="color:limegreen; text-decoration:none; border:2px solid limegreen; padding:6px 10px;">⬅ Home</a>
     </div>
+    <h1>💰 FINANCE TASKS (YT) 💰</h1>
 
-    <div class="nav-buttons">
-        <button class="arcade-button" onclick="prevNews()">⬅ PREV</button>
-        <button class="arcade-button" onclick="nextNews()">NEXT ➡</button>
-    </div>
+    <div class="news-container" id="tasks"></div>
 
     <script>
-        let currentIndex = 0;
-        const newsItems = document.querySelectorAll(".news-card");
+        const tasksEl = document.getElementById('tasks');
+        const tasks = [
+            { title: 'Watch: Budgeting 50/30/20 Explained', url: 'https://www.youtube.com/results?search_query=50+30+20+budget' },
+            { title: 'Watch: Building an Emergency Fund', url: 'https://www.youtube.com/results?search_query=emergency+fund+basics' },
+            { title: 'Watch: SIP vs Lumpsum Investing', url: 'https://www.youtube.com/results?search_query=SIP+vs+Lumpsum' },
+            { title: 'Watch: Understanding Credit Scores', url: 'https://www.youtube.com/results?search_query=credit+score+improvement' },
+            { title: 'Watch: Debt Avalanche vs Snowball', url: 'https://www.youtube.com/results?search_query=debt+avalanche+vs+snowball' }
+        ];
 
-        function showNews(index) {
-            newsItems.forEach((item, i) => {
-                item.classList.toggle("active", i === index);
-            });
-        }
-
-        function nextNews() {
-            currentIndex = (currentIndex + 1) % newsItems.length;
-            showNews(currentIndex);
-        }
-
-        function prevNews() {
-            currentIndex = (currentIndex - 1 + newsItems.length) % newsItems.length;
-            showNews(currentIndex);
-        }
+        tasks.forEach(t => {
+            const card = document.createElement('div');
+            card.className = 'news-card active';
+            card.innerHTML = `
+                <h2>🎯 ${t.title}</h2>
+                <p>Open a curated YouTube search to learn and complete this task.</p>
+                <a href="${t.url}" target="_blank">Open</a>
+            `;
+            tasksEl.appendChild(card);
+        });
     </script>
 
 </body>

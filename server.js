@@ -1,14 +1,16 @@
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 const express = require("express");
 const cors = require("cors");
 const axios = require('axios');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 const path = require('path');
 require('dotenv').config();
 
 const app = express();
 app.use(express.json());
 app.use(cors());
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve static HTML/asset files from the project root
+app.use(express.static(__dirname));
 
 // Define the finance expert system prompt
 const FINANCE_SYSTEM_PROMPT = `You are an expert financial advisor chatbot. Your role is to:
@@ -17,8 +19,7 @@ const FINANCE_SYSTEM_PROMPT = `You are an expert financial advisor chatbot. Your
 - Help with personal finance, investing, budgeting, and financial planning
 - Always include disclaimers when giving investment advice
 - Never make specific stock predictions or guarantees about investment returns
-- Stay up-to-date with general market knowledge but avoid real-time market data
-- If asked about specific numbers or current market data, remind users to verify current information
+- Avoid real-time market claims. If asked, advise verifying with up-to-date sources.
 
 Remember: Always maintain professional ethics and remind users that this is general advice, not personalized financial recommendations.`;
 
@@ -29,65 +30,91 @@ app.post("/chat", async (req, res) => {
             return res.status(400).json({ error: "Message is required" });
         }
 
-        // Using Hugging Face's free API
-        const response = await axios.post(
-            'https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2',
-            {
-                inputs: `<s>[INST] ${FINANCE_SYSTEM_PROMPT}\n\nUser: ${message} [/INST]`,
-                parameters: {
-                    max_new_tokens: 1024,
-                    temperature: 0.7,
-                    top_p: 0.95,
-                    return_full_text: false
-                }
-            },
-            {
-                headers: {
-                    'Authorization': `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
-                    'Content-Type': 'application/json'
-                }
+        const apiKey = process.env.GOOGLE_API_KEY || 'YOUR GEMINI API KEY HERE';
+        const genAI = new GoogleGenerativeAI(apiKey);
+        const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+
+        const chat = model.startChat({
+            systemInstruction: FINANCE_SYSTEM_PROMPT,
+            generationConfig: {
+                temperature: 0.7,
+                topP: 0.95,
+                maxOutputTokens: 1024
             }
-        );
-
-        // Extract the actual response from the model output
-        let responseText = response.data[0].generated_text;
-        
-        // Clean up the response by removing the system prompt and user message
-        responseText = responseText.replace(FINANCE_SYSTEM_PROMPT, '').trim();
-        responseText = responseText.replace(`User: ${message}`, '').trim();
-        
-        // Remove any remaining special tokens
-        responseText = responseText.replace(/<s>|<\/s>|\[INST\]|\[\/INST\]/g, '').trim();
-
-        console.log("Finance Bot Response:", responseText);
-        res.json({ 
-            response: responseText,
-            disclaimer: "This is general financial information and not personalized financial advice. Please consult with a qualified financial advisor for specific recommendations."
         });
 
+        let text;
+        try {
+            const result = await chat.sendMessage(message);
+            const resp = await result.response;
+            text = resp.text();
+        } catch (e) {
+            console.warn('Gemini SDK failed, using fallback:', e?.message);
+            text = generateHelpfulFallback(message);
+        }
+
+        const payload = {
+            message: text,
+            timestamp: new Date().toISOString(),
+            disclaimer: "This is general financial information and not personalized financial advice. Please consult a qualified financial advisor for specific recommendations."
+        };
+
+        console.log("Finance Bot Response:", text);
+        return res.json(payload);
     } catch (error) {
-        console.error("Error:", error);
-        if (error.response?.status === 401) {
-            return res.status(401).json({ 
-                error: "Invalid API key. Please check your Hugging Face API key in the .env file.",
-                details: error.message 
+        console.error("Gemini Error:", error?.response?.data || error.message);
+        const status = error?.response?.status || 500;
+        const apiStatus = error?.response?.data?.error?.status;
+
+        if (status === 401 || apiStatus === 'PERMISSION_DENIED' || apiStatus === 'NOT_FOUND') {
+            return res.json({
+                message: generateHelpfulFallback(req.body?.message || ''),
+                timestamp: new Date().toISOString(),
+                disclaimer: "This is general financial information and not personalized financial advice. Please consult a qualified financial advisor for specific recommendations.",
+                note: "Gemini API unavailable; returned a helpful fallback response."
             });
         }
-        res.status(500).json({ 
+
+        return res.status(500).json({ 
             error: "Something went wrong", 
-            details: error.message 
+            details: error?.response?.data || error.message 
         });
     }
 });
+
+function generateHelpfulFallback(userMessage) {
+    const msg = (userMessage || '').toLowerCase();
+    if (/(emergency|rainy day|buffer)/.test(msg)) {
+        return [
+            'Emergency fund plan: 3–6 months of essential expenses. Automate a small transfer after payday, keep funds in a high‑yield savings account, and refill after any use.'
+        ][0];
+    }
+    if (/(budget|50\/30\/20|spend|save)/.test(msg)) {
+        return '50/30/20 budget: 50% needs, 30% wants, 20% saving/debt. Track 2 weeks of spending, auto‑save on payday, and review monthly to rebalance.';
+    }
+    if (/(invest|mutual fund|sip|stocks|returns)/.test(msg)) {
+        return 'Starter investing: build an emergency fund first, then begin SIPs in broad‑market index funds. Use a risk‑appropriate mix and review annually; avoid timing the market.';
+    }
+    if (/(debt|loan|credit card)/.test(msg)) {
+        return 'Debt payoff: list balances and APRs, pick avalanche (highest APR first) or snowball (smallest balance first), automate extra payments, and avoid new high‑APR debt.';
+    }
+    if (/(credit score|cibil|fico)/.test(msg)) {
+        return 'Credit score tips: pay on time (set autopay), keep utilization <30% (prefer <10%), avoid frequent hard inquiries, and keep your oldest account open.';
+    }
+    if (/(retire|goal|save)/.test(msg)) {
+        return 'Goal planning: define amount × date, auto‑save monthly, increase by 1–2% each quarter, and invest long‑term funds per risk tolerance to beat inflation.';
+    }
+    return 'How can I help with your finances today? Share your goal, timeline, and risk comfort; I’ll outline steps and a simple plan you can start this week.';
+}
 
 // Health check endpoint
 app.get("/health", (req, res) => {
     res.json({ status: "healthy", service: "finance-chatbot" });
 });
 
-// Add a route for the root path
+// Serve the landing page
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(__dirname, 'homepage.html'));
 });
 
 app.listen(PORT, () => {

@@ -171,6 +171,15 @@
         <button onclick="navigate('quiz')">
             ❓ Quiz
         </button>
+        <button onclick="navigate('credit')">
+            📊 Credit Score
+        </button>
+        <button onclick="navigate('returns')">
+            📈 Returns Estimator
+        </button>
+        <button onclick="navigate('savings')">
+            🏦 Savings Calculator
+        </button>
     </div>
 
     <!-- Main Content -->
@@ -189,7 +198,30 @@
 
     <script>
         function navigate(page) {
-            alert("Navigating to " + page + " (Functionality to be added)");
+            if (page === 'chat') {
+                window.location.href = 'chat.html';
+                return;
+            }
+            if (page === 'quiz') {
+                window.location.href = 'quiz.html';
+                return;
+            }
+            if (page === 'task') {
+                window.location.href = 'NEWS.html';
+                return;
+            }
+            if (page === 'credit') {
+                window.location.href = 'Credit_Score_Estimator.html';
+                return;
+            }
+            if (page === 'returns') {
+                window.location.href = 'Returns_Estimator.html';
+                return;
+            }
+            if (page === 'savings') {
+                window.location.href = 'Savings_Goal_Calculator.html';
+                return;
+            }
         }
 
         // Falling Money Effect
